@@ -5,8 +5,6 @@ GUI - Assignment 2
 
 DO NOT COMMIT node_modules TO THE MAIN BRANCH
 
-The main branch is read-only to prevent accidently merging branches, so ignore merging errors if you create a pull request
-
 Create a branch and modify that branch instead
 
 ## How
