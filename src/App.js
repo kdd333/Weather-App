@@ -8,16 +8,13 @@ function App() {
   return (
     <>
       <div>
-        <div id = "nav">
-          <li>
-            <ul><SearchBar></SearchBar></ul>
-            <ul><h1> Weather </h1></ul>
-          </li>
+        <div id = "header">
+          <SearchBar></SearchBar>
+          <Logo></Logo>
         </div>
         <div id = "main">
-          <div id = "main-weather">
-            <Weather></Weather>
-          </div>
+          <Weather location = "London"></Weather>
+          <MainInformation></MainInformation>
         </div>
         <div id = "forecasts">
           <div>
@@ -33,40 +30,98 @@ function App() {
   );
 }
 
-//The a.png image is a placeholder
+// search bar should have 2 modes - light and dark - only dark implemented
 function SearchBar() {
   return (
     <div class = "search-bar">
-      {/* Location image */}
-      <img style = {{height: 100}} src = "a.png"></img>
-      <input placeholder = "Search for location"></input>
-      {/* Search image */}
-      <img style = {{height: 100}} src = "a.png"></img>
+      <img class = "location-icon" src = "location-icon-dark.png"></img>
+      <div class = "search-bar-input">
+        <input class = "location-input" placeholder = "Search for location"></input>
+        <img class = "search-icon" src = "search-icon-dark.png"></img>
+      </div>
     </div>
   )
 }
 
-//Do later
-function Weather() {
 
+// logo component should have 2 modes - light and dark - only dark implemented 
+function Logo() {
+  return (
+    <div class = "logo">
+      <img class = "logo-img" src = "logo-dark.png"></img>
+    </div>
+  )
+}
+
+// started rough layout - all placeholders
+function Weather({location}) {
+  return (
+    <div class = "main-container">
+      <div class = "main-location">
+        <h1> {location} </h1>
+        <p> (weather) </p>   
+      </div>
+      <div class = "main-weather-icon">
+        <img class = "main-weather-img" src = "white-cloud.png"></img>
+      </div>
+      <div class = "main-temperature">
+        <h1> 0° </h1>
+      </div>
+      <div class = "main-information">
+        <div class = "precipitation"> Precipitation: </div>
+        <div class = "humidity"> Humidity: </div>
+        <div class = "wind"> Wind: </div>
+      </div>
+    </div>
+  )
+}
+
+function MainInformation() {
+  return (
+    <div class = "main-info">
+      <p>current weather description and information goes here..</p>
+    </div>
+  )
 }
 
 //Button for each forecast view
 //Hourly and Weekly
 function Forecast({type}) {
   return (
-    <button class = "forecast">
+    <button class = "forecast-btn">
       <h2> {type} Forecast </h2>
     </button>
   )
 }
 
-//Contains the weather for each hour/day
-//To do
+// all placeholder data - needs to be replaced with actual data from API 
 function WeatherContainer() {
   return (
-    <div>
-      {/* Stuff */}
+    <div class = "weather-container">
+      <div class = "box hour-1">
+        <h1> 11:00 </h1>
+        <p> 6° </p>
+        <img class = "weather-icon-small" src = "cloud-sunny.png"></img>
+      </div>
+      <div class = "box hour-2">
+
+      </div>
+      <div class = "box hour-2">
+
+      </div>
+      <div class = "box hour-3">
+
+      </div>
+      <div class = "box hour-4">
+
+      </div>
+      <div class = "box hour-5">
+
+      </div>
+      <div class = "box hour-6">
+
+      </div>
+      <img class = "arrow" src = "arrow-dark.png"></img>
     </div>
   )
 }
@@ -107,3 +162,4 @@ function WeatherButton() {
 }
 
 export default App;
+
