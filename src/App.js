@@ -2,9 +2,10 @@
 To do:
 Night weather shift
 Change description
+Change the number of boxes so arrows work properly - something about dynamic
 */
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 function App() {
   const [location, setLocation] = useState("London");
@@ -14,6 +15,7 @@ function App() {
   const [lon, setLon] = useState("1.0");
   //Changing the weather view from hourly to weekly or vise-versa
   const [weatherView, setWeatherView] = useState("Hourly");
+  const [offset, setOffset] = useState(0);
 
   //Used to change the location by passing it to the child component
   const handleLocationChange = newLocation => {
@@ -31,9 +33,11 @@ function App() {
   const handleWeatherViewChange  = newWeatherView => {
     if (weatherView === "Hourly" && newWeatherView !== "Hourly") {
       setWeatherView(newWeatherView);
+      setOffset(0);
     }
     else if (weatherView === "Weekly" && newWeatherView !== "Weekly") {
       setWeatherView(newWeatherView);
+      setOffset(0);
     }
   }
 
@@ -54,7 +58,7 @@ function App() {
             <Forecast type = "Weekly" onWeatherViewChange = {() => handleWeatherViewChange("Weekly")}></Forecast>
           </div>
           <div>
-            <WeatherContainer lat = {lat} lon = {lon} currentWeatherView = {weatherView}></WeatherContainer>
+            <WeatherContainer lat = {lat} lon = {lon} currentWeatherView = {weatherView} offset = {offset} onOffsetChange = {(offset) => setOffset(offset)}></WeatherContainer>
           </div>
         </div>
       </div>
@@ -66,10 +70,10 @@ function App() {
 function SearchBar() {
   return (
     <div class = "search-bar">
-      <img class = "location-icon" alt = "" src = "location-icon-dark.png"></img>
+      <img class = "location-icon" src = "location-icon-dark.png" alt = ""></img>
       <div class = "search-bar-input">
         <input class = "location-input" placeholder = "Search for location"></input>
-        <img class = "search-icon" alt = "" src = "search-icon-dark.png"></img>
+        <img class = "search-icon" src = "search-icon-dark.png" alt = ""></img>
       </div>
     </div>
   )
@@ -80,7 +84,7 @@ function SearchBar() {
 function Logo() {
   return (
     <div class = "logo">
-      <img class = "logo-img" alt = "" src = "logo-dark.png"></img>
+      <img class = "logo-img" src = "logo-dark.png" alt = ""></img>
     </div>
   )
 }
@@ -97,7 +101,7 @@ function Weather({location, lat, lon}) {
 
     //Fetch the data with metric units
     //No way to get precipitation - not in JSON response
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIKey}&units=metric`)
+    fetch(`https://pro.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIKey}&units=metric`)
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -105,7 +109,6 @@ function Weather({location, lat, lon}) {
       })
       //Data isn't hourly but every three hours
       .then(data => {
-        console.log(data);
         setTemp(Math.round(data['main']['temp']));
         //Rain has light rain and moderate rain, to get the appropriate type the description is needed
         setWeatherType(data['weather'][0]['main'] === "Rain" ? data['weather'][0]['description'] : data['weather'][0]['main']);
@@ -124,7 +127,7 @@ function Weather({location, lat, lon}) {
         <p> {weatherType} </p>   
       </div>
       <div class = "main-weather-icon">
-        <img class = "main-weather-img" alt = "" src = {imageSrc}></img>
+        <img class = "main-weather-img" src = {imageSrc} alt = ""></img>
       </div>
       <div class = "main-temperature">
         <h1> {temp}° </h1>
@@ -157,63 +160,107 @@ function Forecast({type, onWeatherViewChange}) {
   )
 }
 
-//Gets the weather data for every three hours 
-function WeatherContainer({lat, lon, currentWeatherView}) {
-  //Make numOfBoxes dynamic based on window size
+//Gets the weather data for each hour
+function WeatherContainer({lat, lon, currentWeatherView, offset, onOffsetChange}) {
   const numOfBoxes = 8;
+  const [maxBoxes, setMaxBoxes] = useState(24);
   const [weatherData, setWeatherData] = useState([]);
 
   useEffect(() => {
     const APIKey = '137d15d7a9080968e84a1462718ab6e2';
-
     //Fetch the data with metric units
-    fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${APIKey}&units=metric`)
-      .then(response => {
-        console.log(lat, lon);
-        if (response.ok) {
-          return response.json();
-        }
-      })
-      //Data isn't hourly but every three hours
-      .then(data => {
-        console.log(data);
-        let hourData = data['list'];
-        //Intialise the array
-        let newWeatherData = [];
-        for (let i = 0; i < numOfBoxes; i++) {
-          //Get the data from the JSON
-          let id = i;
-          let time = Number(hourData[i]['dt_txt'].split(' ')[1].split(":")[0]);
-          //Formats the time
-          if (time < 12) {
-            if (time === 0) {
-              time = "12 AM";
+    if (currentWeatherView === "Hourly") {
+      setMaxBoxes(24);
+      fetch(`https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${lat}&lon=${lon}&appid=${APIKey}&cnt=24&units=metric`)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then(data => {
+          let hourData = data['list'];
+          //Intialise the array
+          let newWeatherData = [];
+          for (let i = 0; i < numOfBoxes; i++) {
+            //Get the data from the JSON
+            let id = offset + i;
+            let time = Number(hourData[id]['dt_txt'].split(' ')[1].split(":")[0]);
+            time = formatTime(time);
+            let temp = Math.round(hourData[id]['main']['temp']);
+            let weatherType = hourData[id]['weather'][0]['main'];
+            if (weatherType === "Rain") {
+              weatherType = hourData[id]['weather'][0]['description']
             }
-            else {
-              time = time + " AM";
+            newWeatherData.push({id: id, time: time, temp: temp, weatherType: weatherType});
+          }
+          setWeatherData(newWeatherData);
+        })
+    }
+    else if (currentWeatherView === "Weekly") {
+      setMaxBoxes(8);
+      fetch(`https://pro.openweathermap.org/data/2.5/forecast/daily?lat=${lat}&lon=${lon}&appid=${APIKey}&cnt=${numOfBoxes}&units=metric`)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then(data => {
+          let dailyData = data['list'];
+          let newWeatherData = [];
+          for (let i = 0; i < numOfBoxes; i++) {
+            let id = offset + i;
+            //Multiply by 1000 because Date uses milliseconds
+            let time = new Date(Number(dailyData[id]['dt'] * 1000));
+            let timeString = findDay(time.getDay()) + " " + time.getDate();
+            let temp = Math.round(dailyData[id]['temp']['day']);
+            let weatherType = dailyData[id]['weather'][0]['main'];
+            if (weatherType === "Rain") {
+              weatherType = dailyData[id]['weather'][0]['description'];
             }
+            newWeatherData.push({id: id, time: timeString, temp: temp, weatherType: weatherType});
           }
-          else {
-            time = time % 13 + " PM";
-          }
-          let temp = Math.round(hourData[i]['main']['temp']);
-          let weatherType = hourData[i]['weather'][0]['main'];
-          if (weatherType === "Rain") {
-            weatherType = hourData[i]['weather'][0]['description']
-          }
-          newWeatherData.push({id: id, time: time, temp: temp, weatherType: weatherType});
-        }
-        setWeatherData(newWeatherData);
-      })
-  }, [lat, lon])
+          setWeatherData(newWeatherData);
+        })
+    }
+  }, [lat, lon, offset, currentWeatherView])
 
   return (
     <div class = "weather-container">
+      {offset >= numOfBoxes && <img class = "arrow" src = "arrow-dark-back.png" alt = "" onClick = {() => onOffsetChange(offset => offset - numOfBoxes)}></img>}
       {weatherData.map(weather => {
         return (<WeatherInfoBox key = {weather.id} time = {weather.time} temp = {weather.temp} weatherType = {weather.weatherType}></WeatherInfoBox>)
       })}
+      {offset + numOfBoxes < maxBoxes && <img class = "arrow" src = "arrow-dark-forward.png" alt = "" onClick = {() => onOffsetChange(offset => offset + numOfBoxes)}></img>}
     </div>
   )
+}
+
+//Formats the time
+function formatTime(time) {
+  if (time < 12) {
+    if (time === 0) {
+      time = "12 AM";
+    }
+    else {
+      time = time + " AM";
+    }
+  }
+  else {
+    if (time === 12) {
+      time = "12 PM"
+    }
+    else {
+      time = time % 12 + " PM";
+    }
+  }
+  return time;
+}
+
+//Converts the day from a number into the string for the day
+//Starts at 0 - Sunday
+function findDay(day) {
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  return days[day];
 }
 
 function WeatherInfoBox({time, temp, weatherType}) {
@@ -222,7 +269,7 @@ function WeatherInfoBox({time, temp, weatherType}) {
     <div class = "box">
       <h1> {time} </h1>
       <p> {temp}° </p>
-      <img class = "weather-icon-small" alt = "" src = {imageSrc}></img>
+      <img class = "weather-icon-small" src = {imageSrc} alt = ""></img>
     </div>
   )
 }
@@ -260,7 +307,7 @@ function getWeatherData(lat, lon) {
   fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIKey}`)
     .then(response => {
       if (response.ok) {
-        console.log(response.json());
+        console.log(response.clone().json());
         return response.json(); // Parse the response data as JSON
       } else {
         throw new Error('API request failed');
