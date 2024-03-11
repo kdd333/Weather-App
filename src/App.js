@@ -1,9 +1,7 @@
 /*
 To do:
 Night weather shift
-Change image based on weather type for the hour
 Change description
-Format the time to look neater
 */
 
 import { useEffect, useState } from "react";
@@ -14,6 +12,8 @@ function App() {
   //Lon is longitude as a float
   const [lat, setLat] = useState("51.0");
   const [lon, setLon] = useState("1.0");
+  //Changing the weather view from hourly to weekly or vise-versa
+  const [weatherView, setWeatherView] = useState("Hourly");
 
   //Used to change the location by passing it to the child component
   const handleLocationChange = newLocation => {
@@ -26,6 +26,15 @@ function App() {
   //Used to change the longitude
   const handleLonChange = newLon => {
     setLon(newLon);
+  }
+
+  const handleWeatherViewChange  = newWeatherView => {
+    if (weatherView === "Hourly" && newWeatherView !== "Hourly") {
+      setWeatherView(newWeatherView);
+    }
+    else if (weatherView === "Weekly" && newWeatherView !== "Weekly") {
+      setWeatherView(newWeatherView);
+    }
   }
 
   return (
@@ -41,11 +50,11 @@ function App() {
         </div>
         <div id = "forecasts">
           <div>
-            <Forecast type = "Hourly"></Forecast>
-            <Forecast type = "Weekly"></Forecast>
+            <Forecast type = "Hourly" onWeatherViewChange = {() => handleWeatherViewChange("Hourly")}></Forecast>
+            <Forecast type = "Weekly" onWeatherViewChange = {() => handleWeatherViewChange("Weekly")}></Forecast>
           </div>
           <div>
-            <WeatherContainer lat = {lat} lon = {lon}></WeatherContainer>
+            <WeatherContainer lat = {lat} lon = {lon} currentWeatherView = {weatherView}></WeatherContainer>
           </div>
         </div>
       </div>
@@ -140,21 +149,19 @@ function MainInformation() {
 //Button for each forecast view
 //Hourly and Weekly
 //Weekly forecast can't be done - no API data for days
-function Forecast({type}) {
+function Forecast({type, onWeatherViewChange}) {
   return (
-    <button class = "forecast-btn">
+    <button class = "forecast-btn" onClick = {onWeatherViewChange}>
       <h2> {type} Forecast </h2>
     </button>
   )
 }
 
 //Gets the weather data for every three hours 
-function WeatherContainer({lat, lon}) {
+function WeatherContainer({lat, lon, currentWeatherView}) {
   //Make numOfBoxes dynamic based on window size
   const numOfBoxes = 8;
-  const [times, setTimes] = useState(Array(numOfBoxes).fill(0))
-  const [temps, setTemps] = useState(Array(numOfBoxes).fill(0))
-  const [weatherTypes, setWeatherTypes] = useState(Array(numOfBoxes).fill(0));
+  const [weatherData, setWeatherData] = useState([]);
 
   useEffect(() => {
     const APIKey = '137d15d7a9080968e84a1462718ab6e2';
@@ -171,35 +178,40 @@ function WeatherContainer({lat, lon}) {
       .then(data => {
         console.log(data);
         let hourData = data['list'];
-        //Intialise the arrays
-        let newTimes = Array(numOfBoxes).fill(0);
-        let newTemps = Array(numOfBoxes).fill(0);
-        let newWeatherTypes = Array(numOfBoxes).fill(0);
+        //Intialise the array
+        let newWeatherData = [];
         for (let i = 0; i < numOfBoxes; i++) {
           //Get the data from the JSON
-          newTimes[i] = hourData[i]['dt_txt'].split(' ')[1];
-          newTemps[i] = Math.round(hourData[i]['main']['temp']);
-          newWeatherTypes[i] = hourData[i]['weather'][0]['main'];
-          if (newWeatherTypes[i] === "Rain") {
-            newWeatherTypes[i] = hourData[i]['weather'][0]['description'];
+          let id = i;
+          let time = Number(hourData[i]['dt_txt'].split(' ')[1].split(":")[0]);
+          //Formats the time
+          if (time < 12) {
+            if (time === 0) {
+              time = "12 AM";
+            }
+            else {
+              time = time + " AM";
+            }
           }
+          else {
+            time = time % 13 + " PM";
+          }
+          let temp = Math.round(hourData[i]['main']['temp']);
+          let weatherType = hourData[i]['weather'][0]['main'];
+          if (weatherType === "Rain") {
+            weatherType = hourData[i]['weather'][0]['description']
+          }
+          newWeatherData.push({id: id, time: time, temp: temp, weatherType: weatherType});
         }
-        setTimes(newTimes);
-        setTemps(newTemps);
-        setWeatherTypes(newWeatherTypes);
+        setWeatherData(newWeatherData);
       })
   }, [lat, lon])
 
   return (
     <div class = "weather-container">
-      <WeatherInfoBox time = {times[0]} temp = {temps[0]} weatherType = {weatherTypes[0]}></WeatherInfoBox>
-      <WeatherInfoBox time = {times[1]} temp = {temps[1]} weatherType = {weatherTypes[1]}></WeatherInfoBox>
-      <WeatherInfoBox time = {times[2]} temp = {temps[2]} weatherType = {weatherTypes[1]}></WeatherInfoBox>
-      <WeatherInfoBox time = {times[3]} temp = {temps[3]} weatherType = {weatherTypes[1]}></WeatherInfoBox>
-      <WeatherInfoBox time = {times[4]} temp = {temps[4]} weatherType = {weatherTypes[1]}></WeatherInfoBox>
-      <WeatherInfoBox time = {times[5]} temp = {temps[5]} weatherType = {weatherTypes[1]}></WeatherInfoBox>
-      <WeatherInfoBox time = {times[6]} temp = {temps[6]} weatherType = {weatherTypes[1]}></WeatherInfoBox>
-      <WeatherInfoBox time = {times[7]} temp = {temps[7]} weatherType = {weatherTypes[1]}></WeatherInfoBox>
+      {weatherData.map(weather => {
+        return (<WeatherInfoBox key = {weather.id} time = {weather.time} temp = {weather.temp} weatherType = {weather.weatherType}></WeatherInfoBox>)
+      })}
     </div>
   )
 }
@@ -215,7 +227,7 @@ function WeatherInfoBox({time, temp, weatherType}) {
   )
 }
 
-//To add
+//Gets the weather image based on weatherType
 function getWeatherImage(weatherType) {
   let imageSrc = "";
   if (weatherType === "Clouds") {
