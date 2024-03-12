@@ -18,9 +18,7 @@ function App() {
   const [offset, setOffset] = useState(0);
 
   //Used to change the location by passing it to the child component
-  const handleLocationChange = newLocation => {
-    setLocation(newLocation);
-  }
+  
   //Used to change the latitude
   const handleLatChange = newLat => {
     setLat(newLat);
@@ -28,6 +26,10 @@ function App() {
   //Used to change the longitude
   const handleLonChange = newLon => {
     setLon(newLon);
+  }
+
+  const handleLocationChange = newLocation => {
+    setLocation(newLocation);
   }
 
   const handleWeatherViewChange  = newWeatherView => {
@@ -41,11 +43,13 @@ function App() {
     }
   }
 
+  
+
   return (
     <>
       <div>
         <div id = "header">
-          <SearchBar></SearchBar>
+          <SearchBar  onLocationChange= { () =>handleLocationChange("London")}></SearchBar>
           <Logo></Logo>
         </div>
         <div id = "main">
@@ -68,14 +72,37 @@ function App() {
 
 // search bar should have 2 modes - light and dark - only dark implemented
 function SearchBar() {
+
+  const [location, setLocation] = useState("London");
+  const handleLocationChange = newLocation => {
+    setLocation(newLocation);
+  }
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleChange = event => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    if (searchTerm.trim() !== "") {
+      handleLocationChange(searchTerm);
+      setSearchTerm(""); // Clear the input after submitting
+    }
+  };
   return (
-    <div class = "search-bar">
-      <img class = "location-icon" src = "location-icon-dark.png" alt = ""></img>
-      <div class = "search-bar-input">
-        <input class = "location-input" placeholder = "Search for location"></input>
-        <img class = "search-icon" src = "search-icon-dark.png" alt = ""></img>
-      </div>
-    </div>
+    <div className="search-bar">
+    <form onSubmit={handleSubmit}>
+      <input
+        className="location-input"
+        placeholder="Search for location"
+        value={searchTerm}
+        onChange={handleChange}
+      />
+      <button type="submit">Search</button>
+    </form>
+  </div>
   )
 }
 
@@ -95,13 +122,14 @@ function Weather({location, lat, lon}) {
   const [weatherType, setWeatherType] = useState(0);
   const [humidity, setHumidity] = useState(0);
   const [wind, setWind] = useState(0);
+ 
 
   useEffect(() => {
     const APIKey = '137d15d7a9080968e84a1462718ab6e2';
 
     //Fetch the data with metric units
     //No way to get precipitation - not in JSON response
-    fetch(`https://pro.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIKey}&units=metric`)
+    fetch(`https://pro.openweathermap.org/data/2.5/weather?&location=${location}&lat=${lat}&lon=${lon}&appid=${APIKey}&units=metric`)
       .then(response => {
         if (response.ok) {
           return response.json();
@@ -337,12 +365,28 @@ function getWeatherDataThreeHour(lat, lon) {
     })
 }
 
+function getWeatherDataThreeHourlocation(location) {
+  const APIKey = '137d15d7a9080968e84a1462718ab6e2';
+
+  return fetch(`https://api.openweathermap.org/data/2.5/forecast?location=${location}&appid=${APIKey}`)
+    .then(response => {
+      if (response.ok) {
+        console.log(response.clone().json());
+        return response.json(); // Parse the response data as JSON
+      } else {
+        throw new Error('API request failed');
+      }
+    })
+}
+
 //For testing that weather works
 function WeatherButton() {
   return (
     <button onClick = {() => getWeatherDataThreeHour(51.0, 1.0)}></button>
   )
 }
+
+
 
 export default App;
 
