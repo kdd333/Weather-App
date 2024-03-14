@@ -5,7 +5,9 @@ Change description
 Change the number of boxes so arrows work properly - something about dynamic
 */
 
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import SearchBar from "./searchBar";
+
 
 function App() {
   const [location, setLocation] = useState("London");
@@ -18,7 +20,10 @@ function App() {
   const [offset, setOffset] = useState(0);
 
   //Used to change the location by passing it to the child component
-  
+  const handleLocationChange = newLocation => {
+    setLocation(newLocation);
+  }
+
   //Used to change the latitude
   const handleLatChange = newLat => {
     setLat(newLat);
@@ -26,11 +31,7 @@ function App() {
   //Used to change the longitude
   const handleLonChange = newLon => {
     setLon(newLon);
-  }
-
-  const handleLocationChange = newLocation => {
-    setLocation(newLocation);
-  }
+  }  
 
   const handleWeatherViewChange  = newWeatherView => {
     if (weatherView === "Hourly" && newWeatherView !== "Hourly") {
@@ -49,7 +50,7 @@ function App() {
     <>
       <div>
         <div id = "header">
-          <SearchBar  onLocationChange= { () =>handleLocationChange("London")}></SearchBar>
+          <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
           <Logo></Logo>
         </div>
         <div id = "main">
@@ -69,43 +70,6 @@ function App() {
     </>
   );
 }
-
-// search bar should have 2 modes - light and dark - only dark implemented
-function SearchBar() {
-
-  const [location, setLocation] = useState("London");
-  const handleLocationChange = newLocation => {
-    setLocation(newLocation);
-  }
-
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handleChange = event => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleSubmit = event => {
-    event.preventDefault();
-    if (searchTerm.trim() !== "") {
-      handleLocationChange(searchTerm);
-      setSearchTerm(""); // Clear the input after submitting
-    }
-  };
-  return (
-    <div className="search-bar">
-    <form onSubmit={handleSubmit}>
-      <input
-        className="location-input"
-        placeholder="Search for location"
-        value={searchTerm}
-        onChange={handleChange}
-      />
-      <button type="submit">Search</button>
-    </form>
-  </div>
-  )
-}
-
 
 // logo component should have 2 modes - light and dark - only dark implemented 
 function Logo() {
