@@ -48,11 +48,17 @@ function App() {
 
   return (
     <>
-      <div>
-        <div id = "header">
-          <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
+      
+       
+          
+         
+          <div>
+          
+          <div id = "header">
           <Logo></Logo>
+         
         </div>
+        <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
         <div id = "main">
           <Weather location = {location} lat = {lat} lon = {lon}></Weather>
           <MainInformation></MainInformation>

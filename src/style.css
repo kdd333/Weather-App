@@ -20,6 +20,7 @@ body {
     padding-top: 15px;
     padding-bottom: 15px;
     padding-inline: 15%;
+   
     width: auto;
     display: flex;
     flex-direction: row;
@@ -183,7 +184,19 @@ body {
     width: 80px;
 }
 
+button.btn1{
+    align-self: center;
+}
+.btn{
+    height:0px;
+    width:0px;
+}
 
+.sidebar{
+    width:25px;
+    height:250px;
+    
+}
 
 
 

@@ -6,6 +6,8 @@ function SearchBar({onLocationChange, onLatChange, onLonChange}) {
     const [locations, setLocations] = useState(Array(maxLocations));
     const [recent, setRecent] = useState(Array(maxLocations).fill({name: ""}));
     const [isSearching, setIsSearching] = useState(false);
+    
+    
   
     const handleSubmit = event => {
         event.preventDefault();
@@ -75,11 +77,28 @@ function SearchBar({onLocationChange, onLatChange, onLonChange}) {
             setLocations([]);
         }
     }, [searchLocation])
+
+    
   
     return (
-        <form onSubmit = {(e) => handleSubmit(e)}>
-            <input onChange = {(e) => setSearchLocation(e.target.value)} value = {searchLocation}></input>
-            <div class = "searches">
+        <body>
+        <div class="btn">
+        <button class="btn1" onClick={opensearchbar}>☰</button>
+        </div>
+     <div class="searches" style={{display:"none"}}id="mySidebar">
+        <div class="sidebar">
+       
+
+   
+       <form onSubmit = {(e) => handleSubmit(e)}>
+            
+            <input class="searchbar" onChange = {(e) => setSearchLocation(e.target.value)} value = {searchLocation}></input>
+            
+        </form>
+     
+    </div>
+    </div>
+    <div id = "s">
                 {locations.length !== 0 && <h2> Results </h2>}
                 {
                     locations.map(location => {
@@ -96,8 +115,22 @@ function SearchBar({onLocationChange, onLatChange, onLonChange}) {
                     })
                 }
             </div>
-        </form>
+    </body>
+  
+  
+
+
+        
     );
+
+   
   }
 
+  function opensearchbar(){
+    document.getElementById("mySidebar").style.display="block";
+
+    
+  }
+
+  
 export default SearchBar;
