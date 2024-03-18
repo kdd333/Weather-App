@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import { ReactDOM } from "react";
 
 class EventTile extends Component{
     constructor(props){

@@ -1,18 +1,15 @@
 import React, { Component } from "react";
-import ReactDOM from "react";
 import EventTile from "./EventTile";
-
  
 class EventsMenu extends Component {
 constructor(){
     super();
     this.state = {
-        elems: [],
-        json: {}
+        elems: []
     }
     this.fetchEventData("");
 }
-  render(elems) {
+  render() {
     return (
       <div id="container">
           <div id="eventControlGroup">
@@ -31,8 +28,9 @@ constructor(){
     );
   }
 
-  fetchEventData(location){
-    fetch('https://www.skiddle.com/api/v1/events/search/?api_key=c7d125f6586c9ce36123e6d38559f081&latitude=51.5072&longitude=0.1276&radius=30&&limit=100&offset=0')
+  fetchEventData(curLat, curLon){
+    this.setState({elems: []});
+    fetch(`https://www.skiddle.com/api/v1/events/search/?api_key=c7d125f6586c9ce36123e6d38559f081&latitude=${curLat}&longitude=${curLon}&radius=30&&limit=10&offset=0`)
     .then(response => {
       if (response.ok) {
         return response.json(); // Parse the response data as JSON
@@ -52,11 +50,9 @@ constructor(){
         
         for (let x=0; x < 10; x++)
         {
-          console.log(elems);
           eventLIs.push(<EventTile src={elems[x]["imageurl"]} title={elems[x]["eventname"]} desc={elems[x]["description"]} link={elems[x]["link"]}/>);
         }
-        console.log(eventLIs.length);
-        this.setState({elems: eventLIs, json: data.results})
+        this.setState({elems: eventLIs})
     })
     
     .catch(error => {
