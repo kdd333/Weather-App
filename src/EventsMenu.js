@@ -7,7 +7,6 @@ constructor(){
     this.state = {
         elems: []
     }
-    this.fetchEventData("");
 }
   render() {
     return (

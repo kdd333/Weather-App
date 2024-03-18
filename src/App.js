@@ -44,7 +44,8 @@ function App() {
   }
 
   const openMenu = () => {
-    document.getElementById("container").style.transform = "translate3d(0vw,0vw,0vw)";
+    document.getElementById("container").style.transform = "translate3d(0, 0, 0)";
+    window.EVMenu.fetchEventData(lat, lon);
   }
 
   return (
@@ -67,7 +68,7 @@ function App() {
             <WeatherContainer lat = {lat} lon = {lon} currentWeatherView = {weatherView}></WeatherContainer>
           </div>
         </div>
-        <EventsMenu></EventsMenu>
+        <EventsMenu ref = {EVMenu => {window.EVMenu = EVMenu}}></EventsMenu>
         <button onClick = {openMenu}>
           Events
         </button>
