@@ -7,7 +7,9 @@ Change the number of boxes so arrows work properly - something about dynamic
 
 import { useEffect, useState } from "react";
 import SearchBar from "./searchBar";
-
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import EventsMenu from "./EventsMenu";
 
 function App() {
   const [location, setLocation] = useState("London");
@@ -17,7 +19,6 @@ function App() {
   const [lon, setLon] = useState("1.0");
   //Changing the weather view from hourly to weekly or vise-versa
   const [weatherView, setWeatherView] = useState("Hourly");
-  const [offset, setOffset] = useState(0);
 
   //Used to change the location by passing it to the child component
   const handleLocationChange = newLocation => {
@@ -36,29 +37,24 @@ function App() {
   const handleWeatherViewChange  = newWeatherView => {
     if (weatherView === "Hourly" && newWeatherView !== "Hourly") {
       setWeatherView(newWeatherView);
-      setOffset(0);
     }
     else if (weatherView === "Weekly" && newWeatherView !== "Weekly") {
       setWeatherView(newWeatherView);
-      setOffset(0);
     }
   }
 
-  
+  const openMenu = () => {
+    document.getElementById("container").style.transform = "translate3d(0, 0, 0)";
+    window.EVMenu.fetchEventData(lat, lon);
+  }
 
   return (
-    <>
-      
-       
-          
-         
-          <div>
-          
-          <div id = "header">
+    <>    
+      <div>
+        <div id = "header">
+          <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
           <Logo></Logo>
-         
         </div>
-        <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
         <div id = "main">
           <Weather location = {location} lat = {lat} lon = {lon}></Weather>
           <MainInformation></MainInformation>
@@ -68,10 +64,14 @@ function App() {
             <Forecast type = "Hourly" onWeatherViewChange = {() => handleWeatherViewChange("Hourly")}></Forecast>
             <Forecast type = "Weekly" onWeatherViewChange = {() => handleWeatherViewChange("Weekly")}></Forecast>
           </div>
-          <div>
-            <WeatherContainer lat = {lat} lon = {lon} currentWeatherView = {weatherView} offset = {offset} onOffsetChange = {(offset) => setOffset(offset)}></WeatherContainer>
+          <div class = "weather-container">
+            <WeatherContainer lat = {lat} lon = {lon} currentWeatherView = {weatherView}></WeatherContainer>
           </div>
         </div>
+        <EventsMenu ref = {EVMenu => {window.EVMenu = EVMenu}}></EventsMenu>
+        <button onClick = {openMenu}>
+          Events
+        </button>
       </div>
     </>
   );
@@ -85,6 +85,9 @@ function Logo() {
     </div>
   )
 }
+
+
+
 
 //Displays the current weather information
 function Weather({location, lat, lon}) {
@@ -128,18 +131,35 @@ function Weather({location, lat, lon}) {
         <img class = "main-weather-img" src = {imageSrc} alt = ""></img>
       </div>
       <div class = "main-temperature">
-        <h1> {temp}° </h1>
+        <h1> {temp}°c </h1>
       </div>
       <div class = "main-information">
         <div class = "humidity"> Humidity: {humidity}% </div>
-        <div class = "wind"> Wind speed: {wind} km/h </div>
+        <div class = "wind"> Wind: {wind}km/h </div>
       </div>
     </div>
   )
 }
 
 //Add information from API
+//could possibly include a map
 function MainInformation() {
+  useEffect(() => {
+    const APIKey = '137d15d7a9080968e84a1462718ab6e2';
+    const layer = 'precipitation_new';
+    const z = '0';
+    const x = '1';
+    const y = '1';
+
+    //Fetch map
+    fetch(`https://tile.openweathermap.org/map/${layer}/${z}/${x}/${y}.png?appid=${APIKey}`)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+  },)
+
   return (
     <div class = "main-info">
       <p>current weather description and information goes here..</p>
@@ -149,7 +169,6 @@ function MainInformation() {
 
 //Button for each forecast view
 //Hourly and Weekly
-//Weekly forecast can't be done - no API data for days
 function Forecast({type, onWeatherViewChange}) {
   return (
     <button class = "forecast-btn" onClick = {onWeatherViewChange}>
@@ -159,17 +178,38 @@ function Forecast({type, onWeatherViewChange}) {
 }
 
 //Gets the weather data for each hour
-function WeatherContainer({lat, lon, currentWeatherView, offset, onOffsetChange}) {
-  const numOfBoxes = 8;
-  const [maxBoxes, setMaxBoxes] = useState(24);
+function WeatherContainer({lat, lon, currentWeatherView}) {
+  const hourlyNumOfBoxes = 24;
+  const weeklyNumOfBoxes = 8;
   const [weatherData, setWeatherData] = useState([]);
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 3000 },
+      items: 8
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 7
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 700 },
+      items: 5
+    },
+    smallTablet: { 
+      breakpoint: { max: 700, min: 570 },
+      items: 4
+    },
+    mobile: {
+      breakpoint: { max: 570, min: 0 },
+      items: 3
+    }
+  };
 
   useEffect(() => {
     const APIKey = '137d15d7a9080968e84a1462718ab6e2';
     //Fetch the data with metric units
     if (currentWeatherView === "Hourly") {
-      setMaxBoxes(24);
-      fetch(`https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${lat}&lon=${lon}&appid=${APIKey}&cnt=24&units=metric`)
+      fetch(`https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${lat}&lon=${lon}&appid=${APIKey}&cnt=${hourlyNumOfBoxes}&units=metric`)
         .then(response => {
           if (response.ok) {
             return response.json();
@@ -179,9 +219,9 @@ function WeatherContainer({lat, lon, currentWeatherView, offset, onOffsetChange}
           let hourData = data['list'];
           //Intialise the array
           let newWeatherData = [];
-          for (let i = 0; i < numOfBoxes; i++) {
+          for (let i = 0; i < hourlyNumOfBoxes; i++) {
             //Get the data from the JSON
-            let id = offset + i;
+            let id = i;
             let time = Number(hourData[id]['dt_txt'].split(' ')[1].split(":")[0]);
             time = formatTime(time);
             let temp = Math.round(hourData[id]['main']['temp']);
@@ -195,8 +235,7 @@ function WeatherContainer({lat, lon, currentWeatherView, offset, onOffsetChange}
         })
     }
     else if (currentWeatherView === "Weekly") {
-      setMaxBoxes(8);
-      fetch(`https://pro.openweathermap.org/data/2.5/forecast/daily?lat=${lat}&lon=${lon}&appid=${APIKey}&cnt=${numOfBoxes}&units=metric`)
+      fetch(`https://pro.openweathermap.org/data/2.5/forecast/daily?lat=${lat}&lon=${lon}&appid=${APIKey}&cnt=${weeklyNumOfBoxes}&units=metric`)
         .then(response => {
           if (response.ok) {
             return response.json();
@@ -205,8 +244,8 @@ function WeatherContainer({lat, lon, currentWeatherView, offset, onOffsetChange}
         .then(data => {
           let dailyData = data['list'];
           let newWeatherData = [];
-          for (let i = 0; i < numOfBoxes; i++) {
-            let id = offset + i;
+          for (let i = 0; i < weeklyNumOfBoxes; i++) {
+            let id = i;
             //Multiply by 1000 because Date uses milliseconds
             let time = new Date(Number(dailyData[id]['dt'] * 1000));
             let timeString = findDay(time.getDay()) + " " + time.getDate();
@@ -220,18 +259,18 @@ function WeatherContainer({lat, lon, currentWeatherView, offset, onOffsetChange}
           setWeatherData(newWeatherData);
         })
     }
-  }, [lat, lon, offset, currentWeatherView])
+  }, [lat, lon, currentWeatherView])
 
   return (
-    <div class = "weather-container">
-      {offset >= numOfBoxes && <img class = "arrow" src = "arrow-dark-back.png" alt = "" onClick = {() => onOffsetChange(offset => offset - numOfBoxes)}></img>}
+    <Carousel responsive={responsive}>
       {weatherData.map(weather => {
         return (<WeatherInfoBox key = {weather.id} time = {weather.time} temp = {weather.temp} weatherType = {weather.weatherType}></WeatherInfoBox>)
       })}
-      {offset + numOfBoxes < maxBoxes && <img class = "arrow" src = "arrow-dark-forward.png" alt = "" onClick = {() => onOffsetChange(offset => offset + numOfBoxes)}></img>}
-    </div>
+    </Carousel>
   )
 }
+
+
 
 //Formats the time
 function formatTime(time) {
@@ -359,4 +398,3 @@ function WeatherButton() {
 
 
 export default App;
-

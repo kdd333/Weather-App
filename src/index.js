@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './reset.css';
 import './style.css';
+import './events.css';
 
 import App from './App';
 

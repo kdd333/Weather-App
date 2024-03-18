@@ -10,6 +10,10 @@
     font-family: 'Poppins', sans-serif;
 }
 
+html {
+    height: 100%;
+}
+
 body {
     height: 100%;
     width: auto;
@@ -17,10 +21,8 @@ body {
 }
 
 #header {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-inline: 15%;
-   
+    padding: 10px;
+    height: 2.5rem;
     width: auto;
     display: flex;
     flex-direction: row;
@@ -76,7 +78,7 @@ body {
 .logo {
     position: absolute;
     left: 50%;
-    top: 6%;
+    top: 5%;
     transform: translate(-50%,-50%);
 }
 
@@ -87,7 +89,7 @@ body {
 /*------------------- Weather component styling  --------------------*/
 
 .main-container {
-    height: 30vh;
+    height: 10rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -103,27 +105,27 @@ body {
 }
 
 .main-location h1 {
-    font-size: 8vh;
+    font-size: 3rem;
 }
 
 .main-weather-icon {
     width: auto; 
     margin-left: auto; 
     margin-right: auto; 
-    margin-top: 40px;
+    margin-top: 60px;
 }
 
 .main-temperature {
     margin-left: auto; 
-    font-size: 12vh;
+    font-size: 3rem;
     padding-right: 20px;
 }
+
 
 /*------------------- MainInformation component styling  --------------------*/
 
 .main-info {
-    height: 80px;
-    padding: 10px;
+    padding: 20px;
     margin: 20px;
     margin-inline: 15%;
     backdrop-filter: blur(5px);
@@ -132,9 +134,6 @@ body {
     box-shadow: 0px 10px 30px 0px rgba(255, 255, 255, 0.17) inset, 0px 4px 22.6px 0px rgba(0, 0, 0, 0.16);
 }
 
-.main-info p {
-    width: 30%;
-}
 
 /*------------------- Forecast component styling  --------------------*/
 
@@ -148,46 +147,45 @@ body {
     cursor: pointer;
 }
 
+.forecast-btn:focus {
+    background-color: rgba(255, 255, 255, 0.409);
+}
+
 /*------------------- WeatherContainer component styling  --------------------*/
 
 .weather-container {
-    height: 120px;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding: 10px;
     backdrop-filter: blur(5px);
     border-radius: 15px;
     border-top-left-radius: 0px;
     background: rgba(255, 255, 255, 0.05);
     box-shadow: 0px 10px 30px 0px rgba(255, 255, 255, 0.17) inset, 0px 4px 22.6px 0px rgba(0, 0, 0, 0.16);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
+
 }
 
 .box {
-    width: 100px;
+    height: 8rem;
     background-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0px 10px 30px 0px rgba(255, 255, 255, 0.17) inset, 0px 4px 22.6px 0px rgba(0, 0, 0, 0.16);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top:10px;
-}
-
-.arrow {
-    height: 50px;
-    align-self: center;
+    padding-top: 20px;
+    justify-content: space-between;
+    margin-inline: 12px;
 }
 
 .weather-icon-small {
     width: 80px;
 }
 
+
+/*------------------- searchBar component styling  --------------------*/
+
 button.btn1{
     align-self: center;
 }
-.btn{
+.searchBar-btn {
     height:0px;
     width:0px;
 }
@@ -199,6 +197,96 @@ button.btn1{
 }
 
 
+/*------------------- MEDIA QUERIES  --------------------*/
+
+@media (max-width: 850px) {
+
+    #header {
+        padding-inline: 6rem;
+    }
+
+    #forecasts,
+    .main-container,
+    .main-info {
+        margin-inline: 6rem;
+    }
+
+    .main-location h1 {
+        font-size: 3rem;
+    }
+
+    .main-weather-icon img {
+        height: 7rem; 
+    }
+
+    .main-temperature {
+        font-size: 3rem;
+    }
+
+    .main-information {
+        font-size: 0.8rem;
+    }
+
+    .main-info {
+        font-size: 0.8rem;
+    }
+}
 
 
+@media (max-width: 694px) {
 
+    #header {
+        padding-inline: 2rem;
+    }
+
+    .logo-img {
+        height: 30px;
+    }
+
+    #forecasts,
+    .main-container,
+    .main-info {
+        margin-inline: 2rem;
+    }
+
+    .main-location h1,
+    .main-temperature {
+        font-size: 2.2rem;
+    }
+
+}
+
+@media (max-width: 429px) {
+
+    #header {
+        padding-inline: 1rem;
+    }
+
+    #forecasts,
+    .main-container,
+    .main-info {
+        margin-inline: 1rem;
+    }
+
+    .main-location h1,
+    .main-temperature {
+        font-size: 2rem;
+    }
+
+    .main-container {
+        align-items: normal;
+    }
+    
+    .main-weather-icon img{ 
+        height: 8rem;
+        position: absolute;
+        top: 12rem;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
+    
+    .main-temperature {
+        margin: 0;
+    }
+
+}
