@@ -13,6 +13,7 @@ Create a branch and modify that branch instead
 - Open this project in visual studio code, then open a new terminal in VS code from the nav bar
 ![image](https://media.github.qmul.ac.uk/user/1202/files/f8deec03-e9ed-4753-b7a9-a7b2751bd8c4)
 - Type npm install, this installs the node_modules folder to run the app
+- Type npm install react-multi-carousel
 - To run the app, type npm start in the terminal
 
 
