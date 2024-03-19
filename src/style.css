@@ -72,7 +72,43 @@ body {
     background-color: transparent;
     border: none;
 }
+#mySidebar{
+    padding-top: 30%;
+    padding-left: 20%;
+    background-color: black;
+    width:600%;
+    height:1300%;
+}
+button.search-boxes{
+    margin:20%;
+    color:aliceblue;
+    background:none;
+   
+    text-decoration: underline;
+    
+    
+}
+h2{
+    color:white;
+    text-decoration: underline;
+}
 
+input.searchbar{
+    width:500%;
+}
+
+#mySidebar.searches{
+    
+    box-shadow: 0 2px 6000px rgba(0, 0, 0, 17);
+
+}
+.btn2{
+    background:none;
+    color:red;
+}
+.btn{
+    background:none;
+}
 /*------------------- Logo component styling  --------------------*/
 
 .logo {

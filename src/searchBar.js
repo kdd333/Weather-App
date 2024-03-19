@@ -87,12 +87,14 @@ function SearchBar({onLocationChange, onLatChange, onLonChange}) {
     return (
         <div>
             <div class="btn">
-                <button class="btn1" onClick={opensearchbar}>☰</button>
+                <button class="btn1" onClick={opensearchbar}><img src="search-icon-dark.png"></img></button>
             </div>
+
             <div class="searches" style={{display:"none"}}id="mySidebar">
+                <button class="btn2" onClick={closebutton}>x</button>
                 <div class="sidebar">
                     <form onSubmit = {(e) => handleSubmit(e)}>
-                        <input class="searchbar" onChange = {(e) => setSearchLocation(e.target.value)} value = {searchLocation}></input>
+                        <input class="searchbar" placeholder="Search the location" onChange = {(e) => setSearchLocation(e.target.value)} value = {searchLocation}></input>
                         <div id = "s">
                             {locations.length !== 0 && <h2> Results </h2>}
                             {
@@ -121,4 +123,7 @@ function opensearchbar(){
     document.getElementById("mySidebar").style.display = "block";
 }
 
+function closebutton(){
+    document.getElementById("mySidebar").style.display = "none";
+}
 export default SearchBar;
