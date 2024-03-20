@@ -3,6 +3,7 @@ import {useState, useEffect, useContext} from 'react';
 import ThemeContext from './Theme';
 
 function TransportContainer() {
+    //Max number of bus services
     const numOfBuses = 50;
     const [transportType, setTransportType] = useState("Train");
     const [trainData, setTrainData] = useState([]);
@@ -16,6 +17,7 @@ function TransportContainer() {
     }
 
     useEffect(() => {
+        //Gets the data for TFL train lines
         fetch("https://api.tfl.gov.uk/Line/Mode/dlr,elizabeth-line,overground,tram,tube/Status")
             .then(response => {
                 if (response.ok) {
@@ -30,6 +32,7 @@ function TransportContainer() {
                 })
                 setTrainData(newTrainData);
             })
+        //Gets the data for TFL buses
         fetch("https://api.tfl.gov.uk/Line/Mode/bus/Status")
             .then(response => {
                 if (response.ok) {
@@ -70,6 +73,7 @@ function TransportContainer() {
     );
 }
 
+//Two types, Train or Bus
 function TransportType({type, onTransportChange}) {
     return (
         <button onClick = {() => onTransportChange(type)}>
@@ -78,6 +82,7 @@ function TransportType({type, onTransportChange}) {
     );
 }
 
+//Displays information about the service on the line
 function TransportInfoBox({transportInfo, transportType}) {
     const {theme} = useContext(ThemeContext);
     let lineName = "";
