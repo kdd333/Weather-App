@@ -1,15 +1,15 @@
 import React, {Component} from "react";
 
-class EventTile extends Component{
+class EventTile extends Component{ // Make new component class for individual events
     constructor(props){
         super();
-        this.state ={imageURL: props["src"],
+        this.state ={imageURL: props["src"], // Set
                      title: props["title"],
                      description: props["desc"],
                      link: props["link"]}
     }
     
-    render(){
+    render(){ // Render tile as responsive li with opening link if clicked
         return(
             <li onClick={this.open.bind(this)}>
                 <div class="image">
@@ -22,7 +22,7 @@ class EventTile extends Component{
             </li>
         );
     }
-    open(){
+    open(){ // Method to open assigned link in new tab if clicked
         window.open(this.state.link, '_blank');
     }
 
