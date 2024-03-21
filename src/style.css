@@ -15,11 +15,11 @@ html {
 }
 
 body {
-    height: 100%;
+    height: 150%;
 }
 
 #root {
-    height: 100%;
+    height: 120%;
 }
 
 #app-light {
@@ -473,9 +473,13 @@ button.btn1{
 
 .transport-box-dark {
     width: 100%;
-    height: 100%;
+    height: 200%;
     overflow-y: scroll;
     color: white;
+}
+
+.transport-box-light {
+    height: 200%;
 }
 
 .transport-box-dark button {
@@ -504,7 +508,8 @@ button.btn1{
 
     #forecasts,
     .main-container,
-    .main-info {
+    .main-info-light,
+    .main-info-dark {
         margin-inline: 6rem;
     }
 
@@ -580,7 +585,8 @@ button.btn1{
 
     #forecasts,
     .main-container,
-    .main-info {
+    .main-info-light,
+    .main-info-dark {
         margin-inline: 2rem;
     }
 
@@ -635,7 +641,8 @@ button.btn1{
 
     #forecasts,
     .main-container,
-    .main-info {
+    .main-info-light,
+    .main-info-dark{
         margin-inline: 1rem;
     }
 
