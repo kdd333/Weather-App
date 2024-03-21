@@ -1,26 +1,46 @@
-/*
-To do:
-Night weather shift
-Change description
-Change the number of boxes so arrows work properly - something about dynamic
-*/
-
-import { useEffect, useState } from "react";
+import {useEffect, useState, useContext} from "react";
 import SearchBar from "./searchBar";
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import EventsMenu from "./EventsMenu";
+import WeatherMainInformation from "./WeatherMainInformation";
+import ThemeContext from "./Theme";
+import TransportContainer from "./TransportContainer";
 
 function App() {
-  const [location, setLocation] = useState("London");
-  //Lat is latitude as a float
-  //Lon is longitude as a float
+  //Default location
+  const [location, setLocation] = useState("London, England");
   const [lat, setLat] = useState("51.0");
   const [lon, setLon] = useState("1.0");
-  //Changing the weather view from hourly to weekly or vise-versa
+  //weatherView represents the view of the forecast, either hourly or weekly
   const [weatherView, setWeatherView] = useState("Hourly");
+  const [theme, setTheme] = useState("light");
 
-  //Used to change the location by passing it to the child component
+  //Attempt to get the users location
+  //Only runs on first render to avoid changing back to the users location
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((pos) => {
+    const APIKey = '137d15d7a9080968e84a1462718ab6e2';
+    const coords = pos.coords;
+    
+    setLat(coords.latitude);
+    setLon(coords.longitude);
+
+    fetch(`http://pro.openweathermap.org/geo/1.0/reverse?lat=${coords.latitude}&lon=${coords.longitude}&limit=5&appid=${APIKey}`)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then(data => {
+        let city = data[0]['name'];
+        let state = data[0]['state'] !== undefined ? ", " + data[0]['state'] : "";
+        setLocation(city + state);
+      })
+    })
+  }, [])
+  
+  //Used to change the location
   const handleLocationChange = newLocation => {
     setLocation(newLocation);
   }
@@ -34,6 +54,7 @@ function App() {
     setLon(newLon);
   }  
 
+  //Used to change the weatherView
   const handleWeatherViewChange  = newWeatherView => {
     if (weatherView === "Hourly" && newWeatherView !== "Hourly") {
       setWeatherView(newWeatherView);
@@ -43,86 +64,93 @@ function App() {
     }
   }
 
-  const openMenu = () => {
+  const openEventsMenu = () => {
     document.getElementById("container").style.transform = "translate3d(0, 0, 0)";
     window.EVMenu.fetchEventData(lat, lon);
   }
 
   return (
-    <>    
-      <div>
-        <div id = "header">
-          <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
-          <Logo></Logo>
-        </div>
-        <div id = "main">
-          <Weather location = {location} lat = {lat} lon = {lon}></Weather>
-          <MainInformation></MainInformation>
-        </div>
-        <div id = "forecasts">
-          <div>
-            <Forecast type = "Hourly" onWeatherViewChange = {() => handleWeatherViewChange("Hourly")}></Forecast>
-            <Forecast type = "Weekly" onWeatherViewChange = {() => handleWeatherViewChange("Weekly")}></Forecast>
+    <>
+      <ThemeContext.Provider value = {{theme}}>
+        <div id = {"app-" + theme}>
+          <div id = "header">
+            <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
+            <Logo></Logo>
+            <button id = "theme-btn" onClick = {() => {setTheme(theme => {return theme === "light" ? "dark" : "light"})}}> {theme === "light" ? "Dark" : "Light"} Mode </button>
           </div>
-          <div class = "weather-container">
-            <WeatherContainer lat = {lat} lon = {lon} currentWeatherView = {weatherView}></WeatherContainer>
+          <div id = "main">
+            <Weather location = {location} lat = {lat} lon = {lon}></Weather>
+            <WeatherMainInformation lat = {lat} lon = {lon}></WeatherMainInformation>
+          </div>
+          <div id = "forecasts">
+            <div>
+              <Forecast type = "Hourly" onWeatherViewChange = {() => handleWeatherViewChange("Hourly")}></Forecast>
+              <Forecast type = "Weekly" onWeatherViewChange = {() => handleWeatherViewChange("Weekly")}></Forecast>
+            </div>
+            <div class = "weather-container">
+              <WeatherContainer lat = {lat} lon = {lon} currentWeatherView = {weatherView}></WeatherContainer>
+            </div>
+          </div>
+          <div id = "extra">
+            <div id = {"events-" + theme}>
+              <EventsMenu ref = {EVMenu => {window.EVMenu = EVMenu}}></EventsMenu>
+              <button onClick = {openEventsMenu}>
+                Events
+              </button>
+            </div>
+            <div id = {"transport-" + theme}> 
+              <TransportContainer></TransportContainer>
+            </div>
           </div>
         </div>
-        <EventsMenu ref = {EVMenu => {window.EVMenu = EVMenu}}></EventsMenu>
-        <button onClick = {openMenu}>
-          Events
-        </button>
-      </div>
+      </ThemeContext.Provider>
     </>
   );
 }
 
 // logo component should have 2 modes - light and dark - only dark implemented 
 function Logo() {
+  const {theme} = useContext(ThemeContext);
   return (
     <div class = "logo">
-      <img class = "logo-img" src = "logo-dark.png" alt = ""></img>
+      <img class = "logo-img" src = {"logo-" + theme + ".png"} alt = ""></img>
     </div>
   )
 }
-
-
-
 
 //Displays the current weather information
 function Weather({location, lat, lon}) {
   const [temp, setTemp] = useState(0);
   const [weatherType, setWeatherType] = useState(0);
+  const [weatherCondition, setWeatherCondition] = useState(0);
   const [humidity, setHumidity] = useState(0);
   const [wind, setWind] = useState(0);
- 
+  const {theme} = useContext(ThemeContext);
 
   useEffect(() => {
     const APIKey = '137d15d7a9080968e84a1462718ab6e2';
 
     //Fetch the data with metric units
-    //No way to get precipitation - not in JSON response
     fetch(`https://pro.openweathermap.org/data/2.5/weather?&location=${location}&lat=${lat}&lon=${lon}&appid=${APIKey}&units=metric`)
       .then(response => {
         if (response.ok) {
           return response.json();
         }
       })
-      //Data isn't hourly but every three hours
       .then(data => {
         setTemp(Math.round(data['main']['temp']));
-        //Rain has light rain and moderate rain, to get the appropriate type the description is needed
-        setWeatherType(data['weather'][0]['main'] === "Rain" ? data['weather'][0]['description'] : data['weather'][0]['main']);
+        setWeatherType(data['weather'][0]['main']);
+        setWeatherCondition(data['weather'][0]['id'])
         setHumidity(data['main']['humidity']);
         //Windspeed recieved in m/s, to convert to km/h multiply by 3.6
         setWind(Math.round(data['wind']['speed'], 2) * 3.6);
       })
   }, [location, lat, lon])
 
-  let imageSrc = getWeatherImage(weatherType);
+  let imageSrc = getWeatherImage(weatherCondition);
 
   return (
-    <div class = "main-container">
+    <div class = {"main-container-" + theme + " main-container"}>
       <div class = "main-location">
         <h1> {location} </h1>
         <p> {weatherType} </p>   
@@ -131,50 +159,25 @@ function Weather({location, lat, lon}) {
         <img class = "main-weather-img" src = {imageSrc} alt = ""></img>
       </div>
       <div class = "main-temperature">
-        <h1> {temp}°c </h1>
+        <h1> {temp}°C </h1>
       </div>
       <div class = "main-information">
         <div class = "humidity"> Humidity: {humidity}% </div>
         <div class = "wind"> Wind: {wind}km/h </div>
       </div>
     </div>
-  )
-}
-
-//Add information from API
-//could possibly include a map
-function MainInformation() {
-  useEffect(() => {
-    const APIKey = '137d15d7a9080968e84a1462718ab6e2';
-    const layer = 'precipitation_new';
-    const z = '0';
-    const x = '1';
-    const y = '1';
-
-    //Fetch map
-    fetch(`https://tile.openweathermap.org/map/${layer}/${z}/${x}/${y}.png?appid=${APIKey}`)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-      })
-  },)
-
-  return (
-    <div class = "main-info">
-      <p>current weather description and information goes here..</p>
-    </div>
-  )
+  );
 }
 
 //Button for each forecast view
 //Hourly and Weekly
 function Forecast({type, onWeatherViewChange}) {
+  const {theme} = useContext(ThemeContext);
   return (
-    <button class = "forecast-btn" onClick = {onWeatherViewChange}>
+    <button class = {"forecast-btn-" + theme} onClick = {onWeatherViewChange}>
       <h2> {type} Forecast </h2>
     </button>
-  )
+  );
 }
 
 //Gets the weather data for each hour
@@ -217,19 +220,14 @@ function WeatherContainer({lat, lon, currentWeatherView}) {
         })
         .then(data => {
           let hourData = data['list'];
-          //Intialise the array
           let newWeatherData = [];
           for (let i = 0; i < hourlyNumOfBoxes; i++) {
-            //Get the data from the JSON
             let id = i;
             let time = Number(hourData[id]['dt_txt'].split(' ')[1].split(":")[0]);
             time = formatTime(time);
             let temp = Math.round(hourData[id]['main']['temp']);
-            let weatherType = hourData[id]['weather'][0]['main'];
-            if (weatherType === "Rain") {
-              weatherType = hourData[id]['weather'][0]['description']
-            }
-            newWeatherData.push({id: id, time: time, temp: temp, weatherType: weatherType});
+            let weatherCondition = hourData[id]['weather'][0]['id'];
+            newWeatherData.push({id: id, time: time, temp: temp, weatherCondition: weatherCondition});
           }
           setWeatherData(newWeatherData);
         })
@@ -250,11 +248,8 @@ function WeatherContainer({lat, lon, currentWeatherView}) {
             let time = new Date(Number(dailyData[id]['dt'] * 1000));
             let timeString = findDay(time.getDay()) + " " + time.getDate();
             let temp = Math.round(dailyData[id]['temp']['day']);
-            let weatherType = dailyData[id]['weather'][0]['main'];
-            if (weatherType === "Rain") {
-              weatherType = dailyData[id]['weather'][0]['description'];
-            }
-            newWeatherData.push({id: id, time: timeString, temp: temp, weatherType: weatherType});
+            let weatherCondition = dailyData[id]['weather'][0]['id'];
+            newWeatherData.push({id: id, time: timeString, temp: temp, weatherCondition: weatherCondition});
           }
           setWeatherData(newWeatherData);
         })
@@ -262,15 +257,13 @@ function WeatherContainer({lat, lon, currentWeatherView}) {
   }, [lat, lon, currentWeatherView])
 
   return (
-    <Carousel responsive={responsive}>
+    <Carousel responsive = {responsive} slidesToSlide = {3}>
       {weatherData.map(weather => {
-        return (<WeatherInfoBox key = {weather.id} time = {weather.time} temp = {weather.temp} weatherType = {weather.weatherType}></WeatherInfoBox>)
+        return (<WeatherInfoBox key = {weather.id} time = {weather.time} temp = {weather.temp} weatherCondition = {weather.weatherCondition}></WeatherInfoBox>)
       })}
     </Carousel>
-  )
+  );
 }
-
-
 
 //Formats the time
 function formatTime(time) {
@@ -300,101 +293,46 @@ function findDay(day) {
   return days[day];
 }
 
-function WeatherInfoBox({time, temp, weatherType}) {
-  let imageSrc = getWeatherImage(weatherType);
+function WeatherInfoBox({time, temp, weatherCondition}) {
+  const {theme} = useContext(ThemeContext);
+  let imageSrc = getWeatherImage(weatherCondition);
   return (
-    <div class = "box">
+    <div class = {"box-" + theme}>
       <h1> {time} </h1>
       <p> {temp}° </p>
       <img class = "weather-icon-small" src = {imageSrc} alt = ""></img>
     </div>
-  )
+  );
 }
 
-//Gets the weather image based on weatherType
-function getWeatherImage(weatherType) {
+//Gets the weather image based on weatherCondition
+//weatherCondition is the id of the weather
+//All codes can be found at https://openweathermap.org/weather-conditions
+function getWeatherImage(weatherCondition) {
+  const heavyRainCodes = [503, 504, 522, 531];
   let imageSrc = "";
-  if (weatherType === "Clouds") {
-    imageSrc = "white-cloud.png";
+  if (weatherCondition >= 200 && weatherCondition < 300) {
+    imageSrc = "stormy-icon.png";
   }
-  else if (weatherType === "Clear") {
-    imageSrc = "cloud-sunny.png";
-  }
-  else if (weatherType === "light rain") {
+  else if (weatherCondition >= 300 && weatherCondition < 400) {
     imageSrc = "light-rain.png";
   }
-  else if (weatherType === "moderate rain") {
+  else if (heavyRainCodes.findIndex((code) => {return code === weatherCondition;}) >= 0) {
     imageSrc = "heavy-rain.png";
   }
-  else if (weatherType === "Snow") {
-    imageSrc = "snowy.png";
+  else if (weatherCondition >= 500 && weatherCondition < 600) {
+    imageSrc = "light-rain.png";
+  }
+  else if (weatherCondition >= 600 && weatherCondition < 700) {
+    imageSrc = "snowy.png"
+  }
+  else if (weatherCondition === 800 || weatherCondition === 801) {
+    imageSrc = "cloud-sunny.png";
+  }
+  else if (weatherCondition === 802 || weatherCondition === 803 || weatherCondition === 804) {
+    imageSrc = "white-cloud.png";
   }
   return imageSrc;
 }
-
-/* For getting data from the Weather API */
-
-//Gets the weather data for today, in an area
-//Lat is latitude as a float
-//Lon is longitude as a float
-//The limit for API calls is 2000 per day
-function getWeatherData(lat, lon) {
-  const APIKey = '137d15d7a9080968e84a1462718ab6e2';
-
-  fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${APIKey}`)
-    .then(response => {
-      if (response.ok) {
-        console.log(response.clone().json());
-        return response.json(); // Parse the response data as JSON
-      } else {
-        throw new Error('API request failed');
-      }
-    })
-    .then(data => {
-      //Display data
-      console.log(data);
-    })
-    .catch(error => {
-      //Display errors
-      console.error(error);
-    });
-}
-
-function getWeatherDataThreeHour(lat, lon) {
-  const APIKey = '137d15d7a9080968e84a1462718ab6e2';
-
-  return fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${APIKey}`)
-    .then(response => {
-      if (response.ok) {
-        console.log(response.clone().json());
-        return response.json(); // Parse the response data as JSON
-      } else {
-        throw new Error('API request failed');
-      }
-    })
-}
-
-function getWeatherDataThreeHourlocation(location) {
-  const APIKey = '137d15d7a9080968e84a1462718ab6e2';
-
-  return fetch(`https://api.openweathermap.org/data/2.5/forecast?location=${location}&appid=${APIKey}`)
-    .then(response => {
-      if (response.ok) {
-        console.log(response.clone().json());
-        return response.json(); // Parse the response data as JSON
-      } else {
-        throw new Error('API request failed');
-      }
-    })
-}
-
-//For testing that weather works
-function WeatherButton() {
-  return (
-    <button onClick = {() => getWeatherDataThreeHour(51.0, 1.0)}></button>
-  )
-}
-
-
 
 export default App;

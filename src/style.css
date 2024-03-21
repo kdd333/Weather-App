@@ -16,6 +16,14 @@ html {
 
 body {
     height: 100%;
+}
+
+#root {
+    height: 100%;
+}
+
+#app-light {
+    height: 100%;
     width: auto;
     background-image: linear-gradient(rgba(100, 179, 252, 1),rgb(152, 212, 255));
 }
@@ -26,8 +34,21 @@ body {
     width: auto;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     border-bottom: 1px solid rgba(0, 0, 0, 0.25);
     background-color: rgba(255, 255, 255, 0.443);
+}
+
+#theme-btn {
+    padding: 7px;
+    border: 1px solid black;
+    border-radius: 25px;
+    align-self: center;
+    background-color: rgb(255, 255, 255, 0.75);
+}
+
+#theme-btn:hover {
+    background-color: #e1e1e1bf;
 }
 
 #main-weather {
@@ -38,7 +59,44 @@ body {
 
 #forecasts {
     margin-inline: 15%;
-    margin-bottom: 100px;
+    margin-bottom: 2%;
+}
+
+#extra {
+    height: 30vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-left: 15%;
+    width: 75vw;
+}
+
+#events-light {
+    width: 45%;
+    height: fit-content;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0px 10px 30px 0px rgba(255, 255, 255, 0.17) inset, 0px 4px 22.6px 0px rgba(0, 0, 0, 0.16);
+}
+
+#events-light button {
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(255, 255, 255, 0);
+    border-radius: 25px;
+    font-size: 25px;
+    text-decoration: underline;
+}
+
+#events-light button:hover {
+    background-color: rgb(255, 255, 255, 0.2);
+}
+
+#transport-light {
+    width: 45%;
+    height: 100%;
+    display: inline;
 }
 
 /*------------------- SearchBar component styling  --------------------*/
@@ -78,6 +136,8 @@ body {
     background-color: black;
     width:600%;
     height:1300%;
+    position: relative;
+    z-index: 1;
 }
 button.search-boxes{
     margin:20%;
@@ -88,8 +148,9 @@ button.search-boxes{
     
     
 }
-h2{
-    color:white;
+
+#mySidebar h2 {
+    color: white;
     text-decoration: underline;
 }
 
@@ -111,20 +172,13 @@ input.searchbar{
 }
 /*------------------- Logo component styling  --------------------*/
 
-.logo {
-    position: absolute;
-    left: 50%;
-    top: 5%;
-    transform: translate(-50%,-50%);
-}
-
 .logo-img {
     height: 50px;
 }
 
 /*------------------- Weather component styling  --------------------*/
 
-.main-container {
+.main-container-light {
     height: 10rem;
     display: flex;
     flex-direction: row;
@@ -158,9 +212,9 @@ input.searchbar{
 }
 
 
-/*------------------- MainInformation component styling  --------------------*/
+/*------------------- WeatherMainInformation component styling  --------------------*/
 
-.main-info {
+.main-info-light {
     padding: 20px;
     margin: 20px;
     margin-inline: 15%;
@@ -170,10 +224,26 @@ input.searchbar{
     box-shadow: 0px 10px 30px 0px rgba(255, 255, 255, 0.17) inset, 0px 4px 22.6px 0px rgba(0, 0, 0, 0.16);
 }
 
+.warning {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.warning img {
+    height: 100px;
+    width: 100px;
+}
+
+.warning p {
+    font-weight: 700;
+    font-size: 2rem;;
+}
+
 
 /*------------------- Forecast component styling  --------------------*/
 
-.forecast-btn {
+.forecast-btn-light {
     padding: 10px;
     backdrop-filter: blur(5px);
     border-top-left-radius: 15px;
@@ -196,10 +266,9 @@ input.searchbar{
     border-top-left-radius: 0px;
     background: rgba(255, 255, 255, 0.05);
     box-shadow: 0px 10px 30px 0px rgba(255, 255, 255, 0.17) inset, 0px 4px 22.6px 0px rgba(0, 0, 0, 0.16);
-
 }
 
-.box {
+.box-light {
     height: 8rem;
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 10px;
@@ -215,7 +284,6 @@ input.searchbar{
     width: 80px;
 }
 
-
 /*------------------- searchBar component styling  --------------------*/
 
 button.btn1{
@@ -229,9 +297,202 @@ button.btn1{
 .sidebar{
     width:25px;
     height:250px;
-    
 }
 
+.sidebar p {
+    color: white;
+}
+
+/*------------------------- TransportContainer component styling -------------------------*/
+
+.transport-box-light::-webkit-scrollbar {
+    width: 10px;
+}
+
+.transport-box-light::-webkit-scrollbar-track {
+    background: rgb(255, 255, 255, 0);
+    border-radius: 25px;
+}
+
+.transport-box-light::-webkit-scrollbar-thumb {
+    background-color: rgb(50, 50, 50, 0.5);
+}
+
+.transport-box-light::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(20, 20, 20, 0.5);
+}
+
+.transport-box-light {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.transport-types {
+    display: flex;
+    flex-direction: row;
+}
+
+.transport-types button {
+    padding: 10px;
+    border-radius: 15px 15px 0 0;
+    background: rgba(255, 255, 255, 0);
+    box-shadow: 0px 10px 30px 0px rgba(255, 255, 255, 0.17) inset;
+}
+
+.transport-types button:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.transport-results {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 0 25px 25px 25px;
+    background: rgba(255, 255, 255, 0);
+    box-shadow: 0px 10px 30px 0px rgba(255, 255, 255, 0.17) inset;
+}
+
+.transport-boxes-light {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid black;
+    gap: 10%;
+}
+
+/*------------------- DARK THEME -------------------*/
+
+/* App component styling */
+#app-dark {
+    height: 100%;
+    width: auto;
+    background-image: linear-gradient(rgb(22, 22, 22),rgb(36, 37, 37));
+}
+
+/* Weather component styling */
+.main-container-dark {
+    height: 10rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-family: sans-serif;
+    margin-top: 20px;
+    margin-inline: 15%;
+    color: white;
+}
+
+/* WeatherMainInformation component styling */
+.main-info-dark {
+    padding: 20px;
+    margin: 20px;
+    margin-inline: 15%;
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0px 10px 30px 0px rgba(255, 255, 255, 0.17) inset, 0px 4px 22.6px 0px rgba(0, 0, 0, 0.16);
+    color: white;
+}
+
+/* Forecast component styling */
+.forecast-btn-dark {
+    padding: 10px;
+    backdrop-filter: blur(5px);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0px 10px 30px 0px rgba(255, 255, 255, 0.17) inset, 0px 4px 22.6px 0px rgba(0, 0, 0, 0.16);
+    cursor: pointer;
+    color: white;
+}
+
+/* WeatherContainer component styling */
+.box-dark {
+    height: 8rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    justify-content: space-between;
+    margin-inline: 12px;
+    color: white;
+}
+
+/* Events component styling */
+#events-dark {
+    width: 45%;
+    height: fit-content;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0px 10px 30px 0px rgba(255, 255, 255, 0.17) inset, 0px 4px 22.6px 0px rgba(0, 0, 0, 0.16);
+}
+
+#events-dark button {
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(255, 255, 255, 0);
+    border-radius: 25px;
+    font-size: 25px;
+    text-decoration: underline;
+    color: white;
+}
+
+#events-dark button:hover {
+    background-color: rgb(255, 255, 255, 0.2);
+}
+
+/* TransportContainer component styling */
+#transport-dark {
+    width: 45%;
+    display: inline;
+}
+
+.transport-box-dark::-webkit-scrollbar {
+    width: 10px;
+}
+
+.transport-box-dark::-webkit-scrollbar-track {
+    background: rgb(255, 255, 255, 0);
+    border-radius: 25px;
+}
+
+.transport-box-dark::-webkit-scrollbar-thumb {
+    background-color: rgb(200, 200, 200, 0.5);
+}
+
+.transport-box-dark::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(255, 255, 255, 0.5);
+}
+
+.transport-box-dark {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    color: white;
+}
+
+.transport-box-dark button {
+    background: rgb(255, 255, 255, 0.1);
+    color: white;
+}
+
+.transport-boxes-dark {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid white;
+    gap: 10%;
+}
 
 /*------------------- MEDIA QUERIES  --------------------*/
 
@@ -266,6 +527,44 @@ button.btn1{
     .main-info {
         font-size: 0.8rem;
     }
+
+    #extra {
+        flex-direction: column;
+        justify-content: space-around;
+    }
+
+    #events-light {
+        width: 85%;
+    }
+
+    #events-light button {
+        padding: 5px;
+        font-size: 20px;
+    }
+
+    #events-dark {
+        width: 85%;
+    }
+
+    #events-dark button {
+        padding: 5px;
+        font-size: 20px;
+    }
+
+    #transport-light {
+        width: 95%;
+        height: 15vh;
+    }
+
+    #transport-results {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    #transport-dark {
+        width: 95%;
+        height: 15vh;
+    }
 }
 
 
@@ -290,6 +589,42 @@ button.btn1{
         font-size: 2.2rem;
     }
 
+    #extra {
+        height: 25vh;
+        flex-direction: column;
+    }
+
+    #events-light {
+        width: 85%;
+    }
+
+    #events-light button {
+        padding: 2px;
+        font-size: 15px;
+    }
+
+    #events-dark {
+        width: 85%;
+    }
+
+    #events-dark button {
+        padding: 2px;
+        font-size: 15px;
+    }
+
+    #transport-light {
+        width: 95%;
+        height: 12vh;
+    }
+
+    #transport-results {
+        width: 100%;
+    }
+
+    #transport-dark {
+        width: 95%;
+        height: 15vh;
+    }
 }
 
 @media (max-width: 429px) {
@@ -325,4 +660,40 @@ button.btn1{
         margin: 0;
     }
 
+    #extra {
+        height: 20vh;
+        flex-direction: column;
+    }
+
+    #events-light {
+        width: 85%;
+    }
+
+    #events-light button {
+        padding: 0;
+        font-size: 15px;
+    }
+
+    #events-dark {
+        width: 85%;
+    }
+
+    #events-dark button {
+        padding: 0;
+        font-size: 15px;
+    }
+
+    #transport-light {
+        width: 95%;
+        height: 10vh;
+    }
+
+    #transport-results {
+        width: 100%;
+    }
+
+    #transport-dark {
+        width: 95%;
+        height: 10vh;
+    }
 }
