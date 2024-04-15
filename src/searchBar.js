@@ -60,11 +60,11 @@ function SearchBar({onLocationChange, onLatChange, onLonChange}) {
 
     return (
         <div>
-            <div class = "btn">
+            <div class="search-button">
                 <button id="theme-btn" onClick={opensearchbar}>Location</button>
             </div>
             <div class="searches" style={{display:"none"}}id="mySidebar">
-                <button class="btn2" onClick={closebutton}>
+                <button class="exit-btn" onClick={closebutton}>
                     <svg onClick={closebutton} width="24" height="24" fill="solid" viewBox="0 0 24 24">
                         <path stroke="lightgrey" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.25 6.75L6.75 17.25"/>
                         <path stroke="lightgrey" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 6.75L17.25 17.25"/>

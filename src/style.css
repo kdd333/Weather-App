@@ -49,6 +49,7 @@ body {
 
 #theme-btn:hover {
     background-color: #e1e1e1bf;
+    cursor: pointer;
 }
 
 #main-weather {
@@ -101,74 +102,51 @@ body {
 
 /*------------------- SearchBar component styling  --------------------*/
 
-.search-bar {
-    display: flex;
-    flex-direction: row;
-}
-
-.location-icon {
-    height: 30px;
-    cursor: pointer;
-}
-
-.search-bar-input {
-    display: flex;
-    flex-direction: row;
-    height: 30px;
-    border: 1px solid rgba(0, 0, 0, 0.4);
-    border-radius: 15px;
-    padding-inline: 8px;
-}
-
 .search-icon {
     height: 20px;
     align-self: center;
 }
 
-.location-input {
-    width: 20vh;
-    background-color: transparent;
-    border: none;
-}
+
 #mySidebar{
-    padding-top: 30%;
-    padding-left: 20%;
-    background-color: black;
-    width:600%;
-    height:1300%;
+    background-color: whitesmoke;
+    padding: 10px;
+    border-radius: 10px;
+    width: 200px;
+    height: 500px;
     position: relative;
     z-index: 1;
+
 }
+
 button.search-boxes{
-    margin:20%;
-    color:aliceblue;
+    margin-bottom: 10px;
+    color: black;
     background:none;
-   
-    text-decoration: underline;
-    
-    
+    cursor: pointer;
 }
 
 #mySidebar h2 {
-    color: white;
-    text-decoration: underline;
+    color: black;
+    margin-bottom: 10px;
 }
 
 input.searchbar{
-    width:500%;
+    width: auto;
+    background-color: transparent;
+    border: 1px solid black;
+    margin-bottom: 10px;
 }
 
-#mySidebar.searches{
-    
+#mySidebar.searches{  
     box-shadow: 0 2px 6000px rgba(0, 0, 0, 17);
+}
 
-}
-.btn2{
+.exit-btn{
     background:none;
+    cursor: pointer;
 }
-.btn{
-    background:none;
-}
+
 /*------------------- Logo component styling  --------------------*/
 
 .logo-img {
