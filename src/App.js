@@ -74,7 +74,9 @@ function App() {
       <ThemeContext.Provider value = {{theme}}>
         <div id = {"app-" + theme}>
           <div id = "header">
-            <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
+            {/*<button id="theme-btn">*/}
+              <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
+            {/*</button>*/}
             <Logo></Logo>
             <button id = "theme-btn" onClick = {() => {setTheme(theme => {return theme === "light" ? "dark" : "light"})}}> {theme === "light" ? "Dark" : "Light"} Mode </button>
           </div>
