@@ -96,6 +96,7 @@ body {
 #transport-light {
     display: inline;
     height: 200px;
+    width: 95%;
 }
 
 /*------------------- SearchBar component styling  --------------------*/
@@ -277,23 +278,16 @@ button.search-boxes{
     width: 80px;
 }
 
-/*------------------------- TransportContainer component styling -------------------------*/
-
-.transport-box-light::-webkit-scrollbar {
-    width: 10px;
-}
-
-.sidebar{
-    width:25px;
-    height:250px;
-}
-
-.sidebar p {
-    color: white;
-}
 
 /*------------------------- TransportContainer component styling -------------------------*/
 
+.transport-box-light,
+.transport-box-dark {
+    box-shadow: 0px 10px 30px 0px rgba(255, 255, 255, 0.17) inset, 0px 4px 22.6px 0px rgba(0, 0, 0, 0.16);
+    padding: 20px;
+    border-radius: 15px;
+}
+  
 .transport-box-light::-webkit-scrollbar {
     width: 10px;
 }
