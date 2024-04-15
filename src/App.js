@@ -74,11 +74,12 @@ function App() {
       <ThemeContext.Provider value = {{theme}}>
         <div id = {"app-" + theme}>
           <div id = "header">
-            {/*<button id="theme-btn">*/}
-              <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
-            {/*</button>*/}
+            <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
             <Logo></Logo>
-            <button id = "theme-btn" onClick = {() => {setTheme(theme => {return theme === "light" ? "dark" : "light"})}}> {theme === "light" ? "Dark" : "Light"} Mode </button>
+            <div id="nav-btns">
+              <button id="theme-btn" onClick={openEventsMenu}>Events</button>
+              <button id="theme-btn" onClick = {() => {setTheme(theme => {return theme === "light" ? "dark" : "light"})}}> {theme === "light" ? "Dark" : "Light"} Mode </button>
+            </div>
           </div>
           <div id = "main">
             <Weather location = {location} lat = {lat} lon = {lon}></Weather>
@@ -94,36 +95,12 @@ function App() {
             </div>
           </div>
           <div id = "extra">
-            <div id = {"events-" + theme}>
-              <EventsMenu ref = {EVMenu => {window.EVMenu = EVMenu}}></EventsMenu>
-              <button onClick = {openEventsMenu}>
-                Events
-              </button>
-            </div>
             <div id = {"transport-" + theme}> 
               <TransportContainer></TransportContainer>
             </div>
           </div>
-          <div id = "forecasts">
-            <div>
-              <Forecast type = "Hourly" onWeatherViewChange = {() => handleWeatherViewChange("Hourly")}></Forecast>
-              <Forecast type = "Weekly" onWeatherViewChange = {() => handleWeatherViewChange("Weekly")}></Forecast>
-            </div>
-            <div class = "weather-container">
-              <WeatherContainer lat = {lat} lon = {lon} currentWeatherView = {weatherView}></WeatherContainer>
-            </div>
-          </div>
-          <div id = {"events-" + theme}>
-            <EventsMenu ref = {EVMenu => {window.EVMenu = EVMenu}}></EventsMenu>
-            <button onClick = {openEventsMenu}>
-              Events
-            </button>
-          </div>
-          <div id = {"transport-" + theme}> 
-            <TransportContainer></TransportContainer>
-          </div>
-          
         </div>
+        <EventsMenu ref = {EVMenu => {window.EVMenu = EVMenu}}></EventsMenu>
       </ThemeContext.Provider>
     </>
   );
