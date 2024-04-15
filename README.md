@@ -2,7 +2,7 @@
 
 ## About:
 
-This project is a weather application developed as part of a university assignment by a group of students. 
+This project is a weather website application developed as part of a university assignment by a group of students. 
 
 ## Technologies Used:
 - **React**: Used for building the user interface and managing state.
