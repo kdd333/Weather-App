@@ -110,8 +110,5 @@ function closebutton(){
     document.getElementById("mySidebar").style.left = "-250px";
 }
 
-function closebutton(){
-    document.getElementById("mySidebar").style.display = "none";
-}
 
 export default SearchBar;
