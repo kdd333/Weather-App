@@ -1,29 +1,34 @@
 import React, { Component } from "react";
 import EventTile from "./EventTile";
+import ThemeContext from "./Theme";
  
 class EventsMenu extends Component { // Make class to handle API request of and serve to students
-constructor(){
+
+static contextType = ThemeContext; //Set the context of the component
+
+constructor(props){
     super();
     this.state = { // Set up states for rendering and holding EventTile elems
         elems: []
     }
 }
   render() { // Method to handle rendering Events Menu skeleton
+    const {theme} = this.context; //Get the current context
     return (
-      <div id="container">
-          <div id="eventControlGroup">
-            <h1>Events</h1>
-            <div onClick={closeEventsMenu}> 
-              <svg onClick={closeEventsMenu} width="44" height="44" fill="solid" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.25 6.75L6.75 17.25"/>
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 6.75L17.25 17.25"/>
-              </svg>
-            </div>
+      <div id="container" class = {"container-" + theme}>
+        <div id="eventControlGroup">
+          <h1>Events</h1>
+          <div onClick={closeEventsMenu}> 
+            <svg onClick={closeEventsMenu} width="44" height="44" fill="solid" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.25 6.75L6.75 17.25"/>
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 6.75L17.25 17.25"/>
+            </svg>
           </div>
-          <ul id="elemList">
-            {this.state.elems}
-          </ul>
-      </div>
+        </div>
+        <ul id="elemList">
+          {this.state.elems}
+        </ul>
+    </div>
     );
   }
 

@@ -74,13 +74,35 @@ function App() {
       <ThemeContext.Provider value = {{theme}}>
         <div id = {"app-" + theme}>
           <div id = "header">
-            <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
+            {/*<button id="theme-btn">*/}
+              <SearchBar  onLocationChange= {handleLocationChange} onLatChange = {handleLatChange} onLonChange = {handleLonChange}></SearchBar>
+            {/*</button>*/}
             <Logo></Logo>
             <button id = "theme-btn" onClick = {() => {setTheme(theme => {return theme === "light" ? "dark" : "light"})}}> {theme === "light" ? "Dark" : "Light"} Mode </button>
           </div>
           <div id = "main">
             <Weather location = {location} lat = {lat} lon = {lon}></Weather>
             <WeatherMainInformation lat = {lat} lon = {lon}></WeatherMainInformation>
+          </div>
+          <div id = "forecasts">
+            <div>
+              <Forecast type = "Hourly" onWeatherViewChange = {() => handleWeatherViewChange("Hourly")}></Forecast>
+              <Forecast type = "Weekly" onWeatherViewChange = {() => handleWeatherViewChange("Weekly")}></Forecast>
+            </div>
+            <div class = "weather-container">
+              <WeatherContainer lat = {lat} lon = {lon} currentWeatherView = {weatherView}></WeatherContainer>
+            </div>
+          </div>
+          <div id = "extra">
+            <div id = {"events-" + theme}>
+              <EventsMenu ref = {EVMenu => {window.EVMenu = EVMenu}}></EventsMenu>
+              <button onClick = {openEventsMenu}>
+                Events
+              </button>
+            </div>
+            <div id = {"transport-" + theme}> 
+              <TransportContainer></TransportContainer>
+            </div>
           </div>
           <div id = "forecasts">
             <div>
@@ -149,7 +171,7 @@ function Weather({location, lat, lon}) {
   let imageSrc = getWeatherImage(weatherCondition);
 
   return (
-    <div class = {"main-container-" + theme}>
+    <div class = {"main-container-" + theme + " main-container"}>
       <div class = "main-location">
         <h1> {location} </h1>
         <p> {weatherType} </p>   
@@ -256,7 +278,7 @@ function WeatherContainer({lat, lon, currentWeatherView}) {
   }, [lat, lon, currentWeatherView])
 
   return (
-    <Carousel responsive = {responsive}>
+    <Carousel responsive = {responsive} slidesToSlide = {3}>
       {weatherData.map(weather => {
         return (<WeatherInfoBox key = {weather.id} time = {weather.time} temp = {weather.temp} weatherCondition = {weather.weatherCondition}></WeatherInfoBox>)
       })}

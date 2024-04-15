@@ -25,6 +25,7 @@ function SearchBar({onLocationChange, onLatChange, onLonChange}) {
         onLonChange(lon);
         setSearchLocation("");
         setLocations([]);
+        closebutton();
     }
   
     //Get locations and store it
@@ -60,16 +61,22 @@ function SearchBar({onLocationChange, onLatChange, onLonChange}) {
 
     return (
         <div>
-            <div class = "btn">
-                <button class = "btn1" onClick={opensearchbar}><img src="search-icon-dark.png"></img></button>
+            <div class="search-button">
+                <button id="theme-btn" onClick={opensearchbar}>Location</button>
             </div>
-            <div class="searches" style={{display:"none"}}id="mySidebar">
-                <button class="btn2" onClick={closebutton}>x</button>
+            <div class="searches" id="mySidebar">
+                <button class="exit-btn" onClick={closebutton}>
+                    <svg onClick={closebutton} width="24" height="24" fill="solid" viewBox="0 0 24 24">
+                        <path stroke="lightgrey" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.25 6.75L6.75 17.25"/>
+                        <path stroke="lightgrey" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 6.75L17.25 17.25"/>
+                    </svg>
+                </button>
+            
                 <div class="sidebar">
-                    <input class="searchbar" placeholder="Search the location" onChange = {(e) => setSearchLocation(e.target.value)} value = {searchLocation}></input>
+                    <input class="searchbar" placeholder="Search location" onChange = {(e) => setSearchLocation(e.target.value)} value = {searchLocation}></input>
                     <div id = "s">
                         {isSearching && <h2> Results </h2>}
-                        {isSearching && locations.length === 0 && <p> No results </p>}
+                        {isSearching && locations.length === 0 && <p className="no-results"> (No results) </p>}
                         {
                             //Loops through each location fetched from the API and displays a button for it
                             locations.map(location => {
@@ -79,7 +86,7 @@ function SearchBar({onLocationChange, onLatChange, onLonChange}) {
                             })
                         }
                         {isSearching && <h2> Recent </h2>}
-                        {isSearching && recent[0].name === "" && <p> No recent searches </p>}
+                        {isSearching && recent[0].name === "" && <p className="no-results"> (No recent searches) </p>}
                         {
                             //Loops through all the recent searches and displays a button for it
                             recent.map(location => {
@@ -96,7 +103,11 @@ function SearchBar({onLocationChange, onLatChange, onLonChange}) {
 }
 
 function opensearchbar(){
-    document.getElementById("mySidebar").style.display = "block";
+    document.getElementById("mySidebar").style.left = "0";
+}
+
+function closebutton(){
+    document.getElementById("mySidebar").style.left = "-250px";
 }
 
 function closebutton(){

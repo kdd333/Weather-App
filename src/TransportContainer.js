@@ -95,8 +95,8 @@ function TransportInfoBox({transportInfo, transportType}) {
     return (
         <div class = {"transport-boxes-" + theme}>
             <h2> {lineName} </h2>
-            <p> {transportInfo.status} </p>
             {transportInfo.reason !== "" && <p> {transportInfo.reason} </p>}
+            <p> {transportInfo.status} </p>
         </div>
     );
 }
