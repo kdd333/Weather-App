@@ -76,7 +76,7 @@ function SearchBar({onLocationChange, onLatChange, onLonChange}) {
                     <input class="searchbar" placeholder="Search location" onChange = {(e) => setSearchLocation(e.target.value)} value = {searchLocation}></input>
                     <div id = "s">
                         {isSearching && <h2> Results </h2>}
-                        {isSearching && locations.length === 0 && <p className="no-results"> (No Results) </p>}
+                        {isSearching && locations.length === 0 && <p className="no-results"> (No results) </p>}
                         {
                             //Loops through each location fetched from the API and displays a button for it
                             locations.map(location => {
@@ -86,7 +86,7 @@ function SearchBar({onLocationChange, onLatChange, onLonChange}) {
                             })
                         }
                         {isSearching && <h2> Recent </h2>}
-                        {isSearching && recent[0].name === "" && <p> No recent searches </p>}
+                        {isSearching && recent[0].name === "" && <p className="no-results"> (No recent searches) </p>}
                         {
                             //Loops through all the recent searches and displays a button for it
                             recent.map(location => {
@@ -103,11 +103,11 @@ function SearchBar({onLocationChange, onLatChange, onLonChange}) {
 }
 
 function opensearchbar(){
-    document.getElementById("mySidebar").style.display = "flex";
+    document.getElementById("mySidebar").style.left = "0";
 }
 
 function closebutton(){
-    document.getElementById("mySidebar").style.display = "none";
+    document.getElementById("mySidebar").style.left = "-250px";
 }
 
 export default SearchBar;

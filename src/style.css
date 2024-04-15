@@ -103,16 +103,17 @@ body {
 /*------------------- SearchBar component styling  --------------------*/
 
 #mySidebar{
-    position: absolute;
+    position: fixed;
     top: 0;
-    left: 0;
+    left: -250px;
+    transition: left 0.3s ease;
     flex-direction: column;
     background-color: whitesmoke;
     padding: 10px;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     width: 200px;
-    height: 500px;
+    height: 600px;
     z-index: 1;
     box-shadow: 0 2px 6000px rgba(0, 0, 0, 17);
 }
@@ -148,6 +149,10 @@ button.search-boxes{
     position: absolute;
     top: 10px;
     right: 10px;
+}
+
+.exit-btn path {
+    transition: stroke 0.3s ease;
 }
 
 .exit-btn:hover path{
@@ -272,25 +277,6 @@ button.search-boxes{
 
 .weather-icon-small {
     width: 80px;
-}
-
-/*------------------- searchBar component styling  --------------------*/
-
-button.btn1{
-    align-self: center;
-}
-.searchBar-btn {
-    height:0px;
-    width:0px;
-}
-
-.sidebar{
-    width:25px;
-    height:250px;
-}
-
-.sidebar p {
-    color: white;
 }
 
 /*------------------------- TransportContainer component styling -------------------------*/
